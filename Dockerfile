@@ -44,11 +44,15 @@ COPY priv ./priv
 COPY lib ./lib
 COPY extra ./extra
 COPY storybook ./storybook
+COPY .build-assets/tailwind-linux-x64-musl /app/_build/tailwind-linux-x64-musl
+COPY .build-assets/esbuild-linux-x64 /app/_build/esbuild-linux-x64
+COPY .build-assets/dbip-country.mmdb.gz /app/priv/geodb/dbip-country.mmdb.gz
+RUN chmod +x /app/_build/tailwind-linux-x64-musl
+RUN chmod +x /app/_build/esbuild-linux-x64
 
 RUN npm run deploy --prefix ./tracker && \
   mix assets.deploy && \
   mix phx.digest priv/static && \
-  mix download_country_database && \
   mix sentry.package_source_code
 
 WORKDIR /app
@@ -86,4 +90,3 @@ EXPOSE 8000
 ENV DEFAULT_DATA_DIR=/var/lib/plausible
 VOLUME /var/lib/plausible
 CMD ["run"]
-
