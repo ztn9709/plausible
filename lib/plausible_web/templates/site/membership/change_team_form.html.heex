@@ -5,7 +5,7 @@
   <:subtitle>
     Choose the team you'd like to move the site to. The new team must have a sufficient subscription plan.
   </:subtitle>
-  <.form :let={f} for={@conn} action={Routes.membership_path(@conn, :change_team, @site.domain)}>
+  <.form :let={f} for={@conn} action={PlausibleWeb.URL.site_action_path(@site, "change-team")}>
     <div class="my-6">
       <.input
         type="select"

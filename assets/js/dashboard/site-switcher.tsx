@@ -18,6 +18,7 @@ import { rootRoute } from './router'
 import { get } from './api'
 import { ErrorPanel } from './components/error-panel'
 import { useRoutelessModalsContext } from './navigation/routeless-modals-context'
+import { appPath, siteBasePath } from './util/url'
 
 const Favicon = ({
   domain,
@@ -29,11 +30,11 @@ const Favicon = ({
   <img
     aria-hidden="true"
     alt=""
-    src={`/favicon/sources/${encodeURIComponent(domain)}`}
+    src={appPath(`/favicon/sources/${encodeURIComponent(domain)}`)}
     onError={(e) => {
       const target = e.target as HTMLImageElement
       target.onerror = null
-      target.src = '/favicon/sources/placeholder'
+      target.src = appPath('/favicon/sources/placeholder')
     }}
     referrerPolicy="no-referrer"
     className={className}
@@ -58,13 +59,17 @@ const buttonLinkClassName = classNames(
 
 const getSwitchToSiteURL = (
   currentSite: PlausibleSite,
-  site: { domain: string }
+  site: { domain: string; id?: number }
 ): string | null => {
   // Prevents reloading the page when the current site is selected
   if (currentSite.domain === site.domain) {
     return null
   }
-  return `/${encodeURIComponent(site.domain)}`
+  return siteBasePath({
+    id: site.id || 0,
+    domain: site.domain,
+    shared: false
+  })
 }
 
 const SiteSwitcherStatic = () => {
@@ -96,8 +101,8 @@ export const SiteSwitcher = () => {
   const sitesQuery = useQuery({
     enabled: user.loggedIn,
     queryKey: ['sites'],
-    queryFn: async (): Promise<{ data: Array<{ domain: string }> }> => {
-      const response = await get('/api/sites')
+    queryFn: async (): Promise<{ data: Array<{ domain: string; id: number }> }> => {
+      const response = await get(appPath('/api/sites'))
       return response
     },
     placeholderData: (previousData) => previousData
@@ -205,7 +210,7 @@ export const SiteSwitcher = () => {
             >
               <div className="flex">
                 {canSeeViewAllSites && (
-                  <a className={buttonLinkClassName} href={`/sites`}>
+                  <a className={buttonLinkClassName} href={appPath('/sites')}>
                     <ArrowLeftIcon className="size-4 mr-1.5" />
                     Back to sites
                   </a>
@@ -213,7 +218,9 @@ export const SiteSwitcher = () => {
                 {canSeeSiteSettings && (
                   <a
                     className={buttonLinkClassName}
-                    href={`/${encodeURIComponent(currentSite.domain)}/settings/general`}
+                    href={appPath(
+                      `/${encodeURIComponent(currentSite.domain)}/settings/general`
+                    )}
                   >
                     <Cog8ToothIcon className="size-4 mr-1.5" />
                     Site settings

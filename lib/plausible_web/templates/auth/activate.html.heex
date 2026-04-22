@@ -50,7 +50,11 @@
   <.error>{@error}</.error>
 
   <div :if={!@has_email_code?}>
-    <.button_link method="post" class="w-full" href="/activate/request-code">
+    <.button_link
+      method="post"
+      class="w-full"
+      href={Routes.auth_path(@conn, :request_activation_code)}
+    >
       Request activation code
     </.button_link>
   </div>
@@ -63,7 +67,7 @@
         Check your spam folder
       </:item>
       <:item>
-        <.styled_link href="/activate/request-code" method="post">
+        <.styled_link href={Routes.auth_path(@conn, :request_activation_code)} method="post">
           Send a new code
         </.styled_link>
         to {@conn.assigns[:current_user].email}
@@ -95,7 +99,7 @@
       <:item :if={not @has_any_memberships?}>
         <.styled_link
           method="delete"
-          href="/me?redirect=/register"
+          href={Routes.auth_path(@conn, :delete_me, redirect: Routes.auth_path(@conn, :register_form))}
           data-confim="Deleting your account cannot be reversed. Are you sure?"
         >
           Delete this account

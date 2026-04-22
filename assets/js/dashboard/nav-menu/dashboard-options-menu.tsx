@@ -20,6 +20,7 @@ import { Notice } from '../components/notice'
 import { isModifierPressed, isTyping, Keybind } from '../keybinding'
 import { useMatch } from 'react-router-dom'
 import { rootRoute } from '../router'
+import { sitePath } from '../util/url'
 
 function ExportItem({ selectedInterval }: { selectedInterval: string }) {
   const site = useSiteContext()
@@ -43,7 +44,7 @@ function ExportItem({ selectedInterval }: { selectedInterval: string }) {
   const params = api.dashboardStateToSearchParams(dashboardState, [
     { interval: selectedInterval, comparison: undefined }
   ])
-  const endpoint = `/${encodeURIComponent(site.domain)}/export?${params}`
+  const endpoint = `${sitePath(site, '/export')}?${params}`
 
   return (
     <a

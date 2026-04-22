@@ -290,7 +290,7 @@ function Behaviours({ importedDataInView, setMode, mode }) {
           }
           callToAction={{
             action: 'Set up goals',
-            link: `/${encodeURIComponent(site.domain)}/settings/goals`
+            link: url.sitePath(site, '/settings/goals')
           }}
           onHideAction={() => disableMode(Mode.CONVERSIONS)}
         />
@@ -318,10 +318,13 @@ function Behaviours({ importedDataInView, setMode, mode }) {
       if (site.funnelsAvailable) {
         callToAction = {
           action: 'Set up funnels',
-          link: `/${encodeURIComponent(site.domain)}/settings/funnels`
+          link: url.sitePath(site, '/settings/funnels')
         }
       } else {
-        callToAction = { action: 'Upgrade', link: '/billing/choose-plan' }
+        callToAction = {
+          action: 'Upgrade',
+          link: url.appPath('/billing/choose-plan')
+        }
       }
 
       return (
@@ -351,10 +354,13 @@ function Behaviours({ importedDataInView, setMode, mode }) {
       if (site.propsAvailable) {
         callToAction = {
           action: 'Set up props',
-          link: `/${encodeURIComponent(site.domain)}/settings/properties`
+          link: url.sitePath(site, '/settings/properties')
         }
       } else {
-        callToAction = { action: 'Upgrade', link: '/billing/choose-plan' }
+        callToAction = {
+          action: 'Upgrade',
+          link: url.appPath('/billing/choose-plan')
+        }
       }
 
       return (

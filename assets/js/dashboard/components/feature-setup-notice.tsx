@@ -2,6 +2,7 @@ import React from 'react'
 import { MODES } from '../stats/behaviours/modes-context'
 import * as api from '../api'
 import { useSiteContext } from '../site-context'
+import { internalApiPath } from '../util/url'
 
 export function FeatureSetupNotice({
   feature,
@@ -26,7 +27,7 @@ export function FeatureSetupNotice({
       )
     ) {
       api
-        .mutation(`/api/${encodeURIComponent(site.domain)}/disable-feature`, {
+        .mutation(internalApiPath(site, '/disable-feature'), {
           method: 'PUT',
           body: { feature: feature }
         })

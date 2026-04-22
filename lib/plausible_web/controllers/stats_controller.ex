@@ -109,7 +109,7 @@ defmodule PlausibleWeb.StatsController do
         )
 
       !stats_start_date && can_see_stats? ->
-        redirect(conn, to: Routes.site_path(conn, :verification, site.domain))
+        redirect(conn, to: PlausibleWeb.URL.site_path(site, "verification"))
 
       Teams.locked?(site.team) ->
         site = Plausible.Repo.preload(site, :owners)

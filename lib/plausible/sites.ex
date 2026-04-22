@@ -433,7 +433,7 @@ defmodule Plausible.Sites do
   end
 
   def shared_link_url(site, link) do
-    base = PlausibleWeb.Endpoint.url()
+    base = PlausibleWeb.URL.base_url()
     domain = "/share/#{URI.encode_www_form(site.domain)}"
     base <> domain <> "?auth=" <> link.slug
   end

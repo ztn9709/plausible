@@ -9,7 +9,7 @@
       </p>
     <% end %>
   </:subtitle>
-  <.form :let={f} for={@conn} action="/login">
+  <.form :let={f} for={@conn} action={Routes.auth_path(@conn, :login)}>
     <div class="my-4 mt-8">
       <.input
         type="email"
@@ -44,7 +44,7 @@
         Keyword.fetch!(Application.get_env(:plausible, :selfhost), :disable_registration) == false
       }>
         Don't have an account?
-        <.styled_link href="/register">
+        <.styled_link href={Routes.auth_path(@conn, :register_form)}>
           Register
         </.styled_link>
         instead.
@@ -65,7 +65,7 @@
       </:item>
       <:item>
         Forgot password?
-        <.styled_link href="/password/request-reset">
+        <.styled_link href={Routes.auth_path(@conn, :password_reset_request_form)}>
           Click here
         </.styled_link>
         to reset it.

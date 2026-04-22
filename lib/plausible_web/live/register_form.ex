@@ -193,7 +193,7 @@ defmodule PlausibleWeb.Live.RegisterForm do
 
         <p class="text-center text-gray-600 dark:text-gray-500 mt-4">
           Already have an account?
-          <.styled_link href="/login">
+          <.styled_link href={Routes.auth_path(@socket, :login_form)}>
             Log in
           </.styled_link>
         </p>

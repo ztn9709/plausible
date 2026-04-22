@@ -7,6 +7,7 @@ import * as api from '../../api'
 import LazyLoader from '../../components/lazy-loader'
 import { useDashboardStateContext } from '../../dashboard-state-context'
 import { PlausibleSite, useSiteContext } from '../../site-context'
+import { apiPath, sitePath } from '../../util/url'
 
 interface SearchTerm {
   name: string
@@ -60,7 +61,7 @@ function ConfigureSearchTermsCTA({
     <>
       <div>Configure the integration to view search terms</div>
       <a
-        href={`/${encodeURIComponent(site.domain)}/settings/integrations`}
+        href={sitePath(site, '/settings/integrations')}
         className="button mt-4"
       >
         Connect with Google
@@ -93,10 +94,7 @@ export function SearchTerms({
 
   const fetchSearchTerms = useCallback(() => {
     api
-      .get(
-        `/api/stats/${encodeURIComponent(site.domain)}/referrers/Google`,
-        dashboardState
-      )
+      .get(apiPath(site, '/referrers/Google'), dashboardState)
       .then((res) => {
         setSearchTerms(res.results)
         setErrorPayload(null)

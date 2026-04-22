@@ -1,10 +1,58 @@
 import { PlausibleSite } from '../site-context'
+import { withBasePath } from '../../base-path'
 
 export function apiPath(
-  site: Pick<PlausibleSite, 'domain'>,
+  site: Pick<PlausibleSite, 'id' | 'domain'>,
   path = ''
 ): string {
-  return `/api/stats/${encodeURIComponent(site.domain)}${path}/`
+  if (site.domain.includes('/')) {
+    return withBasePath(`/api/stats/s/${site.id}${path}/`)
+  }
+
+  return withBasePath(`/api/stats/${encodeURIComponent(site.domain)}${path}/`)
+}
+
+export function internalApiPath(
+  site: Pick<PlausibleSite, 'id' | 'domain'>,
+  path = ''
+): string {
+  if (site.domain.includes('/')) {
+    return withBasePath(`/api/s/${site.id}${path}`)
+  }
+
+  return withBasePath(`/api/${encodeURIComponent(site.domain)}${path}`)
+}
+
+export function appPath(path: string): string {
+  return withBasePath(path)
+}
+
+export function siteBasePath(
+  site: Pick<PlausibleSite, 'id' | 'domain' | 'shared'>
+): string {
+  if (site.shared) {
+    return withBasePath(`/share/${encodeURIComponent(site.domain)}`)
+  }
+
+  if (site.domain.includes('/')) {
+    return withBasePath(`/s/${site.id}`)
+  }
+
+  return withBasePath(`/${encodeURIComponent(site.domain)}`)
+}
+
+export function sitePath(
+  site: Pick<PlausibleSite, 'id' | 'domain' | 'shared'>,
+  path = ''
+): string {
+  const base = siteBasePath(site)
+
+  if (!path) {
+    return base
+  }
+
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`
+  return `${base}${normalizedPath}`
 }
 
 export function externalLinkForPage(

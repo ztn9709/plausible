@@ -187,7 +187,7 @@ defmodule PlausibleWeb.AuthController do
       case Auth.lookup(email) do
         {:ok, _user} ->
           token = Auth.Token.sign_password_reset(email)
-          url = PlausibleWeb.Endpoint.url() <> "/password/reset?token=#{token}"
+          url = PlausibleWeb.URL.url("password/reset?token=#{token}")
           email_template = PlausibleWeb.Email.password_reset_email(email, url)
           Plausible.Mailer.deliver_later(email_template)
 
@@ -574,7 +574,7 @@ defmodule PlausibleWeb.AuthController do
   end
 
   def logout(conn, params) do
-    redirect_to = Map.get(params, "redirect", "/")
+    redirect_to = Map.get(params, "redirect", Routes.page_path(conn, :index))
 
     conn
     |> UserAuth.log_out_user()
@@ -588,9 +588,9 @@ defmodule PlausibleWeb.AuthController do
 
     redirect_route =
       if redirected_to == "import" do
-        Routes.site_path(conn, :settings_imports_exports, site.domain)
+        PlausibleWeb.URL.site_path(site, "settings/imports-exports")
       else
-        Routes.site_path(conn, :settings_integrations, site.domain)
+        PlausibleWeb.URL.site_path(site, "settings/integrations")
       end
 
     case error do
@@ -634,7 +634,7 @@ defmodule PlausibleWeb.AuthController do
       "import" ->
         redirect(conn,
           to:
-            Routes.google_analytics_path(conn, :property_form, site.domain,
+            PlausibleWeb.URL.site_path(site, "import/google-analytics/property",
               access_token: res["access_token"],
               refresh_token: res["refresh_token"],
               expires_at: NaiveDateTime.to_iso8601(expires_at)
@@ -658,7 +658,7 @@ defmodule PlausibleWeb.AuthController do
 
         site = Repo.get(Plausible.Site, site_id)
 
-        redirect(conn, to: Routes.site_path(conn, :settings_integrations, site.domain))
+        redirect(conn, to: PlausibleWeb.URL.site_path(site, "settings/integrations"))
     end
   end
 

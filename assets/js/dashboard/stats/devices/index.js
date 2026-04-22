@@ -53,7 +53,7 @@ export function browserIconFor(browser) {
   return (
     <img
       alt=""
-      src={`/images/icon/browser/${filename}`}
+      src={url.appPath(`/images/icon/browser/${filename}`)}
       className="w-4 h-4 mr-2"
     />
   )
@@ -163,9 +163,7 @@ const OS_ICONS = {
 export function osIconFor(os) {
   const filename = OS_ICONS[os] || 'fallback.svg'
 
-  return (
-    <img alt="" src={`/images/icon/os/${filename}`} className="w-4 h-4 mr-2" />
-  )
+  return <img alt="" src={url.appPath(`/images/icon/os/${filename}`)} className="w-4 h-4 mr-2" />
 }
 
 function OperatingSystems({ afterFetchData }) {
