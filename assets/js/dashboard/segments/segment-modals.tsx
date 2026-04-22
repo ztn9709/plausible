@@ -26,6 +26,7 @@ import { useSegmentsContext } from '../filtering/segments-context'
 import { Role, UserContextValue, useUserContext } from '../user-context'
 import { useSiteContext } from '../site-context'
 import { Button, buttonClassName } from '../components/button'
+import { appPath, internalApiPath } from '../util/url'
 
 const inModalSectionLabelClassName = 'text-sm font-semibold dark:text-gray-100'
 
@@ -141,7 +142,7 @@ export const DeleteSegmentModal = ({
     queryKey: [segment.id],
     queryFn: async () => {
       const response: string[] = await get(
-        `/api/${encodeURIComponent(site.domain)}/segments/${segment.id}/shared-links`
+        internalApiPath(site, `/segments/${segment.id}/shared-links`)
       )
       return response
     }
@@ -364,7 +365,7 @@ const useSegmentTypeDisabledState = ({
           <>
             To use this segment type,&#32;
             {userIsOwner ? (
-              <a href="/billing/choose-plan" className="underline">
+              <a href={appPath('/billing/choose-plan')} className="underline">
                 please upgrade your subscription
               </a>
             ) : (

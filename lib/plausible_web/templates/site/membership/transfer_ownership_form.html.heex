@@ -15,7 +15,7 @@
   <.form
     :let={f}
     for={@conn}
-    action={Routes.membership_path(@conn, :transfer_ownership, @site.domain)}
+    action={PlausibleWeb.URL.site_action_path(@site, "transfer-ownership")}
   >
     <%= if @conn.assigns[:error] do %>
       <div class="text-red-500 text-xs mt-1">{@conn.assigns[:error]}</div>

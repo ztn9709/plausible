@@ -21,6 +21,7 @@ import { useUserContext } from '../user-context'
 import { mutation } from '../api'
 import { useRoutelessModalsContext } from '../navigation/routeless-modals-context'
 import { useSegmentsContext } from '../filtering/segments-context'
+import { internalApiPath } from '../util/url'
 
 export type RoutelessSegmentModal = 'create' | 'update' | 'delete'
 
@@ -45,7 +46,7 @@ export const RoutelessSegmentModals = () => {
       }) => {
       const response: SavedSegment & { segment_data: SegmentDataFromApi } =
         await mutation(
-          `/api/${encodeURIComponent(site.domain)}/segments/${id}`,
+          internalApiPath(site, `/segments/${id}`),
           {
             method: 'PATCH',
             body: {
@@ -89,7 +90,7 @@ export const RoutelessSegmentModals = () => {
       segment_data: SegmentData
     }) => {
       const response: SavedSegment & { segment_data: SegmentDataFromApi } =
-        await mutation(`/api/${encodeURIComponent(site.domain)}/segments`, {
+        await mutation(internalApiPath(site, '/segments'), {
           method: 'POST',
           body: {
             name,
@@ -120,12 +121,9 @@ export const RoutelessSegmentModals = () => {
   const deleteSegment = useMutation({
     mutationFn: async (data: Pick<SavedSegment, 'id'>) => {
       const response: SavedSegment & { segment_data: SegmentDataFromApi } =
-        await mutation(
-          `/api/${encodeURIComponent(site.domain)}/segments/${data.id}`,
-          {
-            method: 'DELETE'
-          }
-        )
+        await mutation(internalApiPath(site, `/segments/${data.id}`), {
+          method: 'DELETE'
+        })
       return handleSegmentResponse(response)
     },
     onSuccess: (segment): void => {

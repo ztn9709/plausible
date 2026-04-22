@@ -1,5 +1,6 @@
 import React from 'react'
 import classNames from 'classnames'
+import { appPath } from '../../util/url'
 
 interface SourceFaviconProps {
   name: string
@@ -14,7 +15,7 @@ export const SourceFavicon = ({ name, className }: SourceFaviconProps) => {
   return (
     <img
       alt=""
-      src={`/favicon/sources/${encodeURIComponent(name)}`}
+      src={appPath(`/favicon/sources/${encodeURIComponent(name)}`)}
       referrerPolicy="no-referrer"
       className={classNames(
         className,

@@ -89,6 +89,73 @@ defmodule PlausibleWeb.Live.Installation do
      )}
   end
 
+  def mount(
+        %{"site_id" => site_id} = params,
+        _session,
+        socket
+      ) do
+    domain = Plausible.Repo.get!(Plausible.Site, site_id).domain
+
+    site =
+      Plausible.Sites.get_for_user!(socket.assigns.current_user, domain,
+        roles: [
+          :owner,
+          :admin,
+          :editor,
+          :super_admin,
+          :viewer
+        ]
+      )
+
+    flow = params["flow"] || Flows.provisioning()
+
+    socket =
+      on_ee do
+        if connected?(socket) do
+          assign_async(
+            socket,
+            [
+              :recommended_installation_type,
+              :installation_type,
+              :tracker_script_configuration_form,
+              :v1_detected
+            ],
+            fn -> initialize_installation_data(flow, site, params) end
+          )
+        else
+          assign_loading_states(socket)
+        end
+      else
+        {:ok, installation_data} = initialize_installation_data(flow, site, params)
+
+        assign(socket,
+          recommended_installation_type: %AsyncResult{
+            result: installation_data.recommended_installation_type,
+            ok?: true
+          },
+          installation_type: %AsyncResult{
+            result: installation_data.installation_type,
+            ok?: true
+          },
+          tracker_script_configuration_form: %AsyncResult{
+            result: installation_data.tracker_script_configuration_form,
+            ok?: true
+          },
+          v1_detected: %AsyncResult{
+            result: installation_data.v1_detected,
+            ok?: true
+          }
+        )
+      end
+
+    {:ok,
+     assign(socket,
+       site: site,
+       site_created?: params["site_created"] == "true",
+       flow: flow
+     )}
+  end
+
   def handle_params(params, _url, socket) do
     socket =
       if connected?(socket) && socket.assigns.recommended_installation_type.result &&
@@ -303,7 +370,7 @@ defmodule PlausibleWeb.Live.Installation do
     {:noreply,
      push_navigate(socket,
        to:
-         Routes.site_path(socket, :verification, socket.assigns.site.domain,
+         PlausibleWeb.URL.site_path(socket.assigns.site, "verification",
            flow: socket.assigns.flow,
            installation_type: config.installation_type
          )

@@ -7,7 +7,7 @@
     <:title>Transfer site ownership</:title>
     <:subtitle>Transfer ownership of the site to a different account.</:subtitle>
     <.button_link
-      href={Routes.membership_path(@conn, :transfer_ownership_form, @site.domain)}
+      href={PlausibleWeb.URL.site_action_path(@site, "transfer-ownership")}
       theme="danger"
       mt?={false}
     >
@@ -19,7 +19,7 @@
     <:title>Change Teams</:title>
     <:subtitle>Move the site to another team that you are a member of</:subtitle>
     <.button_link
-      href={Routes.membership_path(@conn, :change_team_form, @site.domain)}
+      href={PlausibleWeb.URL.site_action_path(@site, "change-team")}
       theme="danger"
     >
       Change {@site.domain} team
@@ -30,7 +30,7 @@
     <:title>Reset stats</:title>
     <:subtitle>Reset all stats but keep the site configuration intact.</:subtitle>
     <.button_link
-      href={Routes.site_path(@conn, :reset_stats, @site.domain)}
+      href={PlausibleWeb.URL.site_path(@site, "stats")}
       method="delete"
       data-confirm="Resetting the stats cannot be reversed. Are you sure?"
       theme="danger"
@@ -44,7 +44,7 @@
     <:title>Delete site</:title>
     <:subtitle>Permanently delete all stats and site settings.</:subtitle>
     <.button_link
-      href={Routes.site_path(@conn, :delete_site, @site.domain)}
+      href={PlausibleWeb.URL.site_path(@site)}
       theme="danger"
       method="delete"
       data-confirm="Deleting the site data cannot be reversed. Are you sure?"

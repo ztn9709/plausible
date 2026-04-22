@@ -80,7 +80,7 @@ defmodule PlausibleWeb.Live.GoalSettings do
           </p>
           <p :if={ee?() and Plausible.Sites.regular?(@site)} data-test-id="setup-funnels-cta">
             You can also
-            <.styled_link href={Routes.site_path(@socket, :settings_funnels, @domain)}>
+            <.styled_link href={PlausibleWeb.URL.site_path(@site, "settings/funnels")}>
               compose goals into funnels.
             </.styled_link>
           </p>

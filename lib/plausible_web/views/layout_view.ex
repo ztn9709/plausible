@@ -7,7 +7,17 @@ defmodule PlausibleWeb.LayoutView do
   alias PlausibleWeb.Components.Layout
 
   def plausible_url do
-    PlausibleWeb.Endpoint.url()
+    PlausibleWeb.URL.base_url()
+  end
+
+  def base_path do
+    PlausibleWeb.Endpoint.config(:url)
+    |> Keyword.get(:path)
+    |> case do
+      nil -> ""
+      "/" -> ""
+      path -> path
+    end
   end
 
   def websocket_url() do
@@ -37,9 +47,9 @@ defmodule PlausibleWeb.LayoutView do
 
   def home_dest(conn) do
     if conn.assigns[:current_user] do
-      "/sites"
+      Routes.site_path(conn, :index)
     else
-      "/"
+      Routes.page_path(conn, :index)
     end
   end
 

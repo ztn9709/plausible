@@ -3,18 +3,18 @@ import { siteContextDefaultValue } from '../site-context'
 
 describe('apiPath', () => {
   it.each([
-    ['example.com', undefined, '/api/stats/example.com/'],
-    ['example.com', '', '/api/stats/example.com/'],
-    ['example.com', '/test', '/api/stats/example.com/test/'],
+    [{ id: 1, domain: 'example.com' }, undefined, '/api/stats/example.com/'],
+    [{ id: 1, domain: 'example.com' }, '', '/api/stats/example.com/'],
+    [{ id: 1, domain: 'example.com' }, '/test', '/api/stats/example.com/test/'],
     [
-      'example.com/path/is-really/deep',
+      { id: 3, domain: 'example.com/path/is-really/deep' },
       '',
-      '/api/stats/example.com%2Fpath%2Fis-really%2Fdeep/'
+      '/api/stats/s/3/'
     ]
   ])(
-    'when site.domain is %p and path is %s, should return %s',
-    (domain, path, expected) => {
-      const result = apiPath({ domain }, path)
+    'when site is %p and path is %s, should return %s',
+    (site, path, expected) => {
+      const result = apiPath(site, path)
       expect(result).toBe(expected)
     }
   )

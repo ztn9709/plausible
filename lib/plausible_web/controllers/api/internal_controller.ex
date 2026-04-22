@@ -63,7 +63,7 @@ defmodule PlausibleWeb.Api.InternalController do
       on: u.site_id == s.id,
       left_join: up in Plausible.Site.UserPreference,
       on: up.site_id == s.id and up.user_id == ^user.id,
-      select: %{domain: s.domain},
+      select: %{id: s.id, domain: s.domain},
       order_by: [
         asc:
           fragment(

@@ -8,6 +8,7 @@ import { useSiteContext } from '../site-context'
 import { useLastLoadContext } from '../last-load-context'
 import classNames from 'classnames'
 import { popover } from '../components/popover'
+import { apiPath } from '../util/url'
 
 export default function CurrentVisitors({ className = '' }) {
   const { dashboardState } = useDashboardStateContext()
@@ -16,9 +17,7 @@ export default function CurrentVisitors({ className = '' }) {
   const [currentVisitors, setCurrentVisitors] = useState(null)
 
   const updateCount = useCallback(() => {
-    api
-      .get(`/api/stats/${encodeURIComponent(site.domain)}/current-visitors`)
-      .then((res) => setCurrentVisitors(res))
+    api.get(apiPath(site, '/current-visitors')).then((res) => setCurrentVisitors(res))
   }, [site.domain])
 
   useEffect(() => {

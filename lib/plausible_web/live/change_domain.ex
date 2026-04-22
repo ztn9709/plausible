@@ -5,7 +5,6 @@ defmodule PlausibleWeb.Live.ChangeDomain do
   use Plausible
   use PlausibleWeb, :live_view
 
-  alias PlausibleWeb.Router.Helpers, as: Routes
   alias PlausibleWeb.Live.ChangeDomain.Form
   alias Phoenix.LiveView.AsyncResult
 
@@ -25,6 +24,30 @@ defmodule PlausibleWeb.Live.ChangeDomain do
         _session,
         socket
       ) do
+    site =
+      Plausible.Sites.get_for_user!(socket.assigns.current_user, domain,
+        roles: [
+          :editor,
+          :owner,
+          :admin,
+          :super_admin
+        ]
+      )
+
+    {:ok,
+     assign(socket,
+       site: site,
+       detection_result: AsyncResult.loading()
+     )}
+  end
+
+  def mount(
+        %{"site_id" => site_id},
+        _session,
+        socket
+      ) do
+    domain = Plausible.Repo.get!(Plausible.Site, site_id).domain
+
     site =
       Plausible.Sites.get_for_user!(socket.assigns.current_user, domain,
         roles: [
@@ -91,7 +114,7 @@ defmodule PlausibleWeb.Live.ChangeDomain do
           </:item>
           <:item>
             Return to
-            <.styled_link href={Routes.site_path(@socket, :settings_general, @site.domain)}>
+            <.styled_link href={PlausibleWeb.URL.site_path(@site, "settings/general")}>
               Site Settings
             </.styled_link>
           </:item>
@@ -125,7 +148,7 @@ defmodule PlausibleWeb.Live.ChangeDomain do
           </:item>
           <:item>
             Return to
-            <.styled_link href={Routes.site_path(@socket, :settings_general, @site.domain)}>
+            <.styled_link href={PlausibleWeb.URL.site_path(@site, "settings/general")}>
               Site Settings
             </.styled_link>
           </:item>
@@ -242,7 +265,7 @@ defmodule PlausibleWeb.Live.ChangeDomain do
         continuous tracking. The easiest way to fix that is to simply follow your
         <.styled_link
           new_tab
-          href={Routes.site_path(PlausibleWeb.Endpoint, :installation, @site.domain)}
+          href={PlausibleWeb.URL.site_path(@site, "installation")}
         >
           installation instructions
         </.styled_link>
@@ -320,6 +343,6 @@ defmodule PlausibleWeb.Live.ChangeDomain do
     {:noreply,
      socket
      |> assign(site: updated_site)
-     |> push_patch(to: Routes.site_path(socket, :success, updated_site.domain))}
+     |> push_patch(to: PlausibleWeb.URL.site_path(updated_site, "change-domain/success"))}
   end
 end
